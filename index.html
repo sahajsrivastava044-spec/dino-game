@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dino Runner Academy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <h1>Dino Runner Academy</h1>
+
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Credits</a></li>
+                <li><a href="#">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <section class="game-area">
+
+            <div class="dino"></div>
+
+            <div class="obstacle"></div>
+
+            <div class="ground"></div>
+
+            <div class="start-screen">
+                <div class="start-content">
+                    <h2>Ready to Run?</h2>
+                    <p>Press <span class="key">Spacebar</span> or <span class="key">Up Arrow</span> to Play</p>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="hud">
+            
+            <div>
+                High Score:
+                <span id="high-score">0</span>
+            </div>
+
+            <div>
+                Score:
+                <span id="score">0</span>
+            </div>
+
+            <div>
+                Level:
+                <span id="level">1</span>
+            </div>
+
+        </section>
+
+        <section class="meme-popup">
+
+            <div></div>
+
+        </section>
+        
+        <section class="game-over hidden">
+            <h2>GAME OVER 👹</h2>
+            <button id="restart-btn">Restart</button>
+        </section>
+
+    </main>
+
+    <footer>
+        Dino Runner Academy © 2026
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
