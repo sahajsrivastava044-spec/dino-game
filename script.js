@@ -333,30 +333,92 @@ function updateAnimations(deltaTime) {
   dino.style.backgroundImage = `url('${currentFrames[currentFrameIndex]}')`;
 }
 
+// ─── Hitbox Debug Overlay ───────────────────────────────────────────────────
+let debugMode = false;
+let dinoBox, obstBox;
+
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'KeyD') {
+    debugMode = !debugMode;
+    if (debugMode) {
+      if (!dinoBox) {
+        dinoBox = createDebugBox('rgba(0,255,100,0.35)', '2px solid #00ff64');
+        obstBox = createDebugBox('rgba(255,80,80,0.35)', '2px solid #ff5050');
+        gameArea.appendChild(dinoBox);
+        gameArea.appendChild(obstBox);
+      }
+      dinoBox.style.display = 'block';
+      obstBox.style.display = 'block';
+    } else if (dinoBox) {
+      dinoBox.style.display = 'none';
+      obstBox.style.display = 'none';
+    }
+  }
+});
+
+function createDebugBox(bg, border) {
+  const el = document.createElement('div');
+  el.style.cssText = `
+    position:absolute;
+    pointer-events:none;
+    z-index:99;
+    background:${bg};
+    border:${border};
+    border-radius:3px;
+    display:none;
+  `;
+  return el;
+}
+
+function updateDebugBoxes(dh, oh) {
+  if (!debugMode || !dinoBox) return;
+  const gaRect = gameArea.getBoundingClientRect();
+
+  dinoBox.style.left   = (dh.left  - gaRect.left)  + 'px';
+  dinoBox.style.top    = (dh.top   - gaRect.top)   + 'px';
+  dinoBox.style.width  = (dh.right - dh.left)       + 'px';
+  dinoBox.style.height = (dh.bottom - dh.top)       + 'px';
+
+  obstBox.style.left   = (oh.left  - gaRect.left)  + 'px';
+  obstBox.style.top    = (oh.top   - gaRect.top)   + 'px';
+  obstBox.style.width  = (oh.right - oh.left)       + 'px';
+  obstBox.style.height = (oh.bottom - oh.top)       + 'px';
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 function checkCollisions() {
   const dinoRect = dino.getBoundingClientRect();
   const obstacleRect = obstacle.getBoundingClientRect();
 
-  // Hitbox insets
+  const dW = dinoRect.width;
+  const dH = dinoRect.height;
+  const oW = obstacleRect.width;
+  const oH = obstacleRect.height;
+
+  // Proportional insets — percentages of each element's rendered size.
+  // Dino sprite has transparent padding on all sides; tighten to the body.
   const dinoHitbox = {
-    left: dinoRect.left + 22,
-    right: dinoRect.right - 22,
-    top: dinoRect.top + 15,
-    bottom: dinoRect.bottom - 5
+    left:   dinoRect.left   + dW * 0.28,   // 28% from left  (cut transparent left edge)
+    right:  dinoRect.right  - dW * 0.22,   // 22% from right (cut transparent right edge)
+    top:    dinoRect.top    + dH * 0.12,   // 12% from top   (cut head clearance gap)
+    bottom: dinoRect.bottom - dH * 0.05    //  5% from bottom (feet touch ground)
   };
 
+  // Obstacle GIF has a transparent bottom strip; trim it off.
   const obstacleHitbox = {
-    left: obstacleRect.left + 22,
-    right: obstacleRect.right - 22,
-    top: obstacleRect.top + 15,
-    bottom: obstacleRect.bottom
+    left:   obstacleRect.left   + oW * 0.18,  // 18% from left
+    right:  obstacleRect.right  - oW * 0.18,  // 18% from right
+    top:    obstacleRect.top    + oH * 0.10,  // 10% from top
+    bottom: obstacleRect.bottom - oH * 0.08   //  8% from bottom (remove transparent base)
   };
+
+  updateDebugBoxes(dinoHitbox, obstacleHitbox);
 
   if (
-    dinoHitbox.right > obstacleHitbox.left &&
-    dinoHitbox.left < obstacleHitbox.right &&
-    dinoHitbox.bottom > obstacleHitbox.top &&
-    dinoHitbox.top < obstacleHitbox.bottom
+    dinoHitbox.right  > obstacleHitbox.left  &&
+    dinoHitbox.left   < obstacleHitbox.right &&
+    dinoHitbox.bottom > obstacleHitbox.top   &&
+    dinoHitbox.top    < obstacleHitbox.bottom
   ) {
     endGame();
   }

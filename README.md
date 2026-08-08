@@ -85,7 +85,7 @@ If you have **Node.js** installed on your computer, you can spin up a lightweigh
 1.  Open your Terminal (macOS/Linux) or PowerShell/Command Prompt (Windows).
 2.  Navigate to your folder:
     ```bash
-    cd "C:\Users\SAHAJ SRIVASTAVA\OneDrive\Desktop\dino-game"
+    cd "C:\Users\<file_location>\dino-game"
     ```
 3.  Run either of these command tools (no installation required!):
     ```bash
